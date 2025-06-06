@@ -1,14 +1,16 @@
-namespace Lexical;
 
 public enum TokenType
 {
     LABEL,
     VAR,
     FUNCTION,
+    INSTRUCTION,
     NUM,
     COLOR,
-
     ASSING,
+
+    GOTO,
+
     //Boolean
     AND,
     OR,
@@ -32,12 +34,29 @@ public enum TokenType
     OPENCOR,
     CLOSECOR,
     COMMA,
-    QUOTE,
 }
 
+public enum ExpressionType
+{
+    NUM,
+    COLOR,
+    ARITHMETHIC,
+    BOOLEAN,
+}
 public static class Utils
 {
     public static HashSet<string> Functions = new HashSet<string>
+    {
+        "GetActualX",
+        "GetActualY",
+        "GetCanvasSize",
+        "GetColorCount",
+        "IsBrushColor",
+        "IsBrushSize",
+        "IsCanvasColor",
+    };
+
+    public static HashSet<string> Instructions = new HashSet<string>
     {
         "Spawn",
         "Color",
@@ -46,14 +65,6 @@ public static class Utils
         "DrawCircle",
         "DrawRectangle",
         "Fill",
-        "GetActualX",
-        "GetActualY",
-        "GetCanvasSize",
-        "GetColorCount",
-        "IsBrushColor",
-        "IsBrushSize",
-        "IsCanvasColor",
-        "GoTo"
     };
 
     public static HashSet<string> Colors = new HashSet<string>

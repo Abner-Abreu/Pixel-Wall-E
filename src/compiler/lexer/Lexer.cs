@@ -198,7 +198,7 @@ public class Lexer
             }
             if (input[i] == '%')
             {
-                lineTokens.Add(new Token(TokenType.DIV, "%", currentLine, currentPosition));
+                lineTokens.Add(new Token(TokenType.MOD, "%", currentLine, currentPosition));
                 continue;
             }
 
@@ -228,6 +228,17 @@ public class Lexer
                     lineTokens.Add(new Token(TokenType.FUNCTION, label, currentLine, currentPosition - advance));
                     continue;
                 }
+                if (IsInstruction(label))
+                {
+                    lineTokens.Add(new Token(TokenType.INSTRUCTION, label, currentLine, currentPosition - advance));
+                    continue;
+                }
+                if (label == "GoTo")
+                {
+                    lineTokens.Add(new Token(TokenType.GOTO, label, currentLine, currentPosition - advance));
+                    continue;
+                }
+
                 if (IsValidLabel(label))
                 {
                     lineTokens.Add(new Token(TokenType.LABEL, label, currentLine, currentPosition - advance));
@@ -283,6 +294,11 @@ public class Lexer
 
     private bool IsValidLabel(string text)
     {
-        return !(IsNum(text[0]) || text[0] == '_'); 
+        return !(IsNum(text[0]) || text[0] == '_');
+    }
+
+    private bool IsInstruction(string text)
+    {
+        return Utils.Instructions.Contains(text);
     }
 }
