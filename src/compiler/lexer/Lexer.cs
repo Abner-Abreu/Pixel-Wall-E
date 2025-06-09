@@ -22,6 +22,7 @@ public class Lexer
             {
                 if (lineTokens.Count() != 0)
                 {
+                    CheckVars(lineTokens);
                     tokens.Add(lineTokens);
                     lineTokens = new List<Token>();
                 }
@@ -228,11 +229,6 @@ public class Lexer
                     lineTokens.Add(new Token(TokenType.FUNCTION, label, currentLine, currentPosition - advance));
                     continue;
                 }
-                if (IsInstruction(label))
-                {
-                    lineTokens.Add(new Token(TokenType.INSTRUCTION, label, currentLine, currentPosition - advance));
-                    continue;
-                }
                 if (label == "GoTo")
                 {
                     lineTokens.Add(new Token(TokenType.GOTO, label, currentLine, currentPosition - advance));
@@ -261,7 +257,7 @@ public class Lexer
 
     private bool IsFunction(string text)
     {
-        return Utils.Functions.Contains(text);
+        return Utils.Functions.ContainsKey(text);
     }
 
     private bool IsAlpha(char character)
@@ -297,8 +293,29 @@ public class Lexer
         return !(IsNum(text[0]) || text[0] == '_');
     }
 
-    private bool IsInstruction(string text)
+    private void CheckVars(List<Token> tokenLine)
     {
-        return Utils.Instructions.Contains(text);
+        bool openParFound = false;
+
+        for (int i = 0; i < tokenLine.Count; i++)
+        {
+            if (i + 1 < tokenLine.Count && tokenLine[i].Type == TokenType.LABEL && tokenLine[i + 1].Type == TokenType.ASSING)
+            {
+                tokenLine[i] = tokenLine[i] = new Token(TokenType.VAR, tokenLine[i].Content, tokenLine[i].Line,tokenLine[i].Position);
+            }
+            if (tokenLine[i].Type == TokenType.OPENPAR)
+                {
+                    openParFound = true;
+                }
+            if (tokenLine[i].Type == TokenType.CLOSEPAR)
+            {
+                openParFound = false;
+            }
+            if (openParFound && tokenLine[i].Type == TokenType.LABEL)
+            {
+                tokenLine[i] = new Token(TokenType.VAR, tokenLine[i].Content, tokenLine[i].Line,tokenLine[i].Position);
+            }
+        }
     }
+
 }
