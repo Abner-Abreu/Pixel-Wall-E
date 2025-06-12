@@ -10,15 +10,14 @@ public class Lexer
         List<Token> lineTokens = new List<Token>();
         List<Error> errors = new List<Error>();
 
-        input += '$'; //End Of File Sign
         int currentLine = 1;
         int currentPosition = 0;
         for (int i = 0; i < input.Length; i++)
         {
             currentPosition++;
-            if (input[i] == ' ') continue;
+            if (input[i] == ' ' || input[i] == '\t' || input[i] == '\r') continue;
 
-            if (input[i] == '\n' || input[i] == '\r' || (input[i] == '$' && i + 1 == input.Length))
+            if (input[i] == '\n'|| i + 1 == input.Length)
             {
                 if (lineTokens.Count() != 0)
                 {
@@ -27,7 +26,7 @@ public class Lexer
                     lineTokens = new List<Token>();
                 }
                 currentPosition = 0;
-                currentLine++;
+                currentLine+= 1;
                 continue;
             }
 
@@ -295,27 +294,20 @@ public class Lexer
 
     private void CheckVars(List<Token> tokenLine)
     {
-        bool openParFound = false;
-
-        for (int i = 0; i < tokenLine.Count; i++)
+        if (tokenLine[0].Type == TokenType.LABEL && tokenLine.Count > 1 && tokenLine[1].Type == TokenType.ASSING)
         {
-            if (i + 1 < tokenLine.Count && tokenLine[i].Type == TokenType.LABEL && tokenLine[i + 1].Type == TokenType.ASSING)
-            {
-                tokenLine[i] = tokenLine[i] = new Token(TokenType.VAR, tokenLine[i].Content, tokenLine[i].Line,tokenLine[i].Position);
-            }
-            if (tokenLine[i].Type == TokenType.OPENPAR)
-                {
-                    openParFound = true;
-                }
-            if (tokenLine[i].Type == TokenType.CLOSEPAR)
-            {
-                openParFound = false;
-            }
-            if (openParFound && tokenLine[i].Type == TokenType.LABEL)
-            {
-                tokenLine[i] = new Token(TokenType.VAR, tokenLine[i].Content, tokenLine[i].Line,tokenLine[i].Position);
-            }
+            tokenLine[0] = new Token(TokenType.VAR, tokenLine[0]);
         }
+        if (tokenLine[0].Type == TokenType.VAR || tokenLine[0].Type == TokenType.FUNCTION)
+            {
+                for (int i = 1; i < tokenLine.Count; i++)
+                {
+                    if (tokenLine[i].Type == TokenType.LABEL)
+                    {
+                        tokenLine[i] = new Token(TokenType.VAR, tokenLine[i]);
+                    }
+                }
+            }
     }
 
 }

@@ -15,9 +15,9 @@ public class Token
         Position = position;
     }
 
-    public Token(Token token)
+    public Token(TokenType type , Token token)
     {
-        Type = token.Type;
+        Type = type;
         Content = token.Content;
         Line = token.Line;
     }
