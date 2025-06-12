@@ -1,5 +1,6 @@
 ﻿using Lexical;
 using Errors;
+using Parsing;
 public class Program
 {
     public static void Main()
@@ -9,33 +10,28 @@ Color(""Black"")
 n <- 5
 k <- 3 + 3 * 10
 n <- k * 2
+f <- 4 >= 2 && 4 == 4 || 4 <= 2 || IsBrushColor(""Blue"")
 actual_x <- GetActualX()
-i <- 0
-$
+i <- 3 % 2 + 4 ** 2 - 10 / 2
+IsBrushSize(IsBrushSize())
 loop1
 DrawLine(1,0,1)
 i <- i + 1
 is_brush_color_blue <- IsBrushColor(""Blue"")
-GoTo [loop_ends_here] (is_brush_color_blue == 1)
-GoTo [loop1] (i < 10)
+GoTo[Malanga](1 == 1)
 Color(""Blue"")
-GoTo [loop1] (1 == 1)
+
         
 loop_ends_here";
         Lexer lexer = new Lexer(testInput);
-
-        foreach (List<Token> tokens in lexer.Tokens)
+        Parser parser = new Parser(lexer.Tokens);
+        foreach (var erro in parser.SintaxErrors)
         {
-            foreach (Token token in tokens)
-            {
-                Console.Write(token.Type + " ");
-            }
-            Console.WriteLine();
+            Console.WriteLine(erro.GetError());
         }
-        foreach (Error error in lexer.LexicalErrors)
+        foreach (var item in parser.Program)
         {
-            Console.WriteLine(error.GetError());
+            ASTPrinter.PrintAST(item, 0);
         }
     }
-    
 }

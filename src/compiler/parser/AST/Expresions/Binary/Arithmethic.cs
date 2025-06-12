@@ -13,10 +13,10 @@ public abstract class Arithmethic : Binary
     {
         bool right = Right.CheckSemantic(context, semanticErrors);
         bool left = Left.CheckSemantic(context, semanticErrors);
-        
+
         if (Right.Type != ExpressionType.NUM || Left.Type != ExpressionType.NUM)
         {
-            semanticErrors.Add(new Error(ErrorType.Semantic,"Both members of the expression most be numbers", Line, Position));
+            semanticErrors.Add(new Error(ErrorType.Semantic, "Both members of the expression most be numbers", Line, Position));
             return false;
         }
 

@@ -6,7 +6,7 @@ public class Function : Expression
 {
     public string Identifier { private set; get; }
     public ReturnType Return { private set; get; }
-    public List<Expression?> Parameters {set; get; }
+    public List<Expression?> Parameters { set; get; }
 
     public Function(string identifier, int line, int position) : base(line, position)
     {
