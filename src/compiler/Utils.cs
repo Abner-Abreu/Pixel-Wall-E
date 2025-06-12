@@ -41,7 +41,8 @@ public enum ExpressionType
     COLOR,
     ARITHMETHIC,
     BOOLEAN,
-    VAR
+    VAR,
+    ASSING,
 }
 
 public enum ReturnType

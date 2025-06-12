@@ -5,14 +5,14 @@ using Errors;
 public class Parser
 {
     public Context Context { private set; get; }
-    public List<AST?> Program { private set; get; }
+    public List<Expression?> Program { private set; get; }
 
     public List<Error> SintaxErrors { private set; get; }
     public List<Error> SemanticErrors { private set; get; }
     public Parser(List<List<Token>> tokens)
     {
         Context = new Context();
-        Program = new List<AST?>();
+        Program = new List<Expression?>();
         SintaxErrors = new List<Error>();
         SemanticErrors = new List<Error>();
         foreach (List<Token> tokenLine in tokens)
@@ -29,12 +29,12 @@ public class Parser
             }
             if (tokenLine[0].Type == TokenType.GOTO)
             {
-                ParseGoTo(tokenLine);
+                ParseGoToExpression(tokenLine);
                 continue;
             }
             if (tokenLine[0].Type == TokenType.FUNCTION)
             {
-                Program.Add(ParseFunction(tokenLine, 0, tokenLine.Count - 1));
+                Program.Add(ParseFunctionExpression(tokenLine, 0, tokenLine.Count - 1));
                 continue;
             }
             SintaxErrors.Add(new Error(ErrorType.Syntax, $"Invalid expression {tokenLine[0].Content}", tokenLine[0].Line, tokenLine[0].Position));
@@ -45,11 +45,29 @@ public class Parser
     {
         if (IsBooleanExpression(tokens, first, last)) return ParseBooleanExpression(tokens, first, last);
         if (IsArithmethicExpression(tokens, first, last)) return ParseArithmethicExpression(tokens, first, last);
-        if (tokens[first].Type == TokenType.FUNCTION) return ParseFunction(tokens, first, last);
+        if (tokens[first].Type == TokenType.FUNCTION) return ParseFunctionExpression(tokens, first, last);
+        if (first == last) return ParseAtomExpression(tokens[first]);
+
         SintaxErrors.Add(new Error(ErrorType.Syntax, "Invalid Expresion", tokens[first].Line, tokens[first].Position));
         return null;
     }
 
+    private Expression? ParseAtomExpression(Token token)
+    {
+        switch (token.Type)
+        {
+            case TokenType.VAR:
+                Variable variable = new Variable(token.Content, token.Line, token.Position);
+                return variable;
+            case TokenType.NUM:
+                Number number = new Number(token.Line, token.Position, token);
+                return number;
+            case TokenType.COLOR:
+                Color color = new Color(token.Line, token.Position, token);
+                return color;
+            default: return null;    
+        }
+    }
     private bool IsBooleanExpression(List<Token> tokens, int first, int last)
     {
         for (int i = first; i <= last; i++)
@@ -59,7 +77,8 @@ public class Parser
             || tokens[i].Type == TokenType.LESS
             || tokens[i].Type == TokenType.LESS_EQUAL
             || tokens[i].Type == TokenType.MORE
-            || tokens[i].Type == TokenType.MORE_EQUAL)
+            || tokens[i].Type == TokenType.MORE_EQUAL
+            || tokens[i].Type == TokenType.EQUAL)
                 return true;
         }
         return false;
@@ -82,7 +101,7 @@ public class Parser
     private Expression? ParseBooleanExpression(List<Token> tokens, int first, int last)
     {
         //Search OR expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             if (tokens[i].Type == TokenType.OR)
             {
@@ -93,7 +112,7 @@ public class Parser
             }
         }
         //Search AND expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             if (tokens[i].Type == TokenType.AND)
             {
@@ -104,7 +123,7 @@ public class Parser
             }
         }
         //Search EQUAL, LESS, MORE, LESS_EQUAL, MORE_EQUAL expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             switch (tokens[i].Type)
             {
@@ -143,7 +162,7 @@ public class Parser
     private Expression? ParseArithmethicExpression(List<Token> tokens, int first, int last)
     {
         //Search POW expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             switch (tokens[i].Type)
             {
@@ -155,7 +174,7 @@ public class Parser
             }
         }
         //Search MULT, DIV, MOD expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             switch (tokens[i].Type)
             {
@@ -169,10 +188,15 @@ public class Parser
                     div.Left = ParseExpression(tokens, first, i - 1);
                     div.Right = ParseExpression(tokens, i + 1, last);
                     return div;
+                case TokenType.MOD:
+                    Mod mod = new Mod(tokens[i].Line, tokens[i].Position);
+                    mod.Left = ParseExpression(tokens, first, i - 1);
+                    mod.Right = ParseExpression(tokens, i + 1, last);
+                    return mod;
             }
         }
         //Search ADD, SUBS expressions
-        for (int i = first; i < tokens.Count; i++)
+        for (int i = first; i < last; i++)
         {
             switch (tokens[i].Type)
             {
@@ -224,40 +248,91 @@ public class Parser
         else
         {
             Variable variable = new Variable(tokens[0].Content, tokens[0].Line, tokens[0].Position);
-            Assing assing = new Assing(tokens[0].Line, tokens[0].Position);
+            Assing assing = new Assing(tokens[1].Line, tokens[1].Position);
             assing.Left = variable;
-            assing.Right = ParseExpression(tokens, 2, tokens.Count);
+            assing.Right = ParseExpression(tokens, 2, tokens.Count - 1);
             Program.Add(assing);
         }
     }
 
-    private void ParseGoTo(List<Token> tokens)
+    private void ParseGoToExpression(List<Token> tokens)
     {
-        throw new NotImplementedException();
+        if (tokens[1].Type != TokenType.OPENCOR)
+        {
+            SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""["" expected", tokens[1].Line, tokens[1].Position));
+            return;
+        }
+        if (tokens[2].Type != TokenType.LABEL)
+        {
+            SemanticErrors.Add(new Error(ErrorType.Semantic, @"Invalid expression, label expected", tokens[2].Line, tokens[2].Position));
+            return;
+        }
+        if (tokens[3].Type != TokenType.CLOSECOR)
+        {
+            SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""]"" expected", tokens[3].Line, tokens[3].Position));
+            return;
+        }
+        if (tokens[4].Type != TokenType.OPENPAR)
+        {
+            SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""("" expected", tokens[4].Line, tokens[4].Position));
+            return;
+        }
+        if (tokens[^1].Type != TokenType.CLOSEPAR)
+        {
+            SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, "")"" expected", tokens[^1].Line, tokens[^1].Position));
+            return;
+        }
+        GoTo goTo = new GoTo(tokens[0].Line, tokens[0].Position);
+        goTo.Label = tokens[2].Content;
+        goTo.Condition = ParseExpression(tokens, 5, tokens.Count - 2);
+        Program.Add(goTo);
     }
 
-    private Expression? ParseFunction(List<Token> tokens, int first, int last)
+    private Expression? ParseFunctionExpression(List<Token> tokens, int first, int last)
     {
         if (tokens[first + 1].Type != TokenType.OPENPAR)
         {
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""("" expected", tokens[first + 1].Line, tokens[first + 1].Position));
             return null;
         }
-        if (tokens[last].Type != TokenType.CLOSEPAR)
+        bool closeParFinded = false;
+        for (int i = last; i >= first+2; i--)
+        {
+            if (tokens[i].Type == TokenType.CLOSEPAR)
+            {
+                closeParFinded = true;
+                if (i != last)
+                {
+                    SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, last token most be a "")""", tokens[last].Line, tokens[last].Line));
+                    return null;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        if (closeParFinded == false)
         {
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, "")"" expected", tokens[last].Line, tokens[last].Position));
             return null;
         }
+        if (tokens[last].Type != TokenType.CLOSEPAR)
+            {
+
+                return null;
+            }
         Function function = new Function(tokens[first].Content, tokens[first].Line, tokens[first].Position);
         int checkPoint = first + 2;
+        if (tokens[checkPoint].Type == TokenType.CLOSEPAR) return function;
         for (int i = first + 2; i <= last; i++)
-        {
-            if (tokens[i].Type == TokenType.COMMA || i == last)
             {
-                function.Parameters.Add(ParseExpression(tokens, checkPoint, i - 1));
-                checkPoint = i + 1;
+                if (tokens[i].Type == TokenType.COMMA || i == last)
+                {
+                    function.Parameters.Add(ParseExpression(tokens, checkPoint, i - 1));
+                    checkPoint = i + 1;
+                }
             }
-        }
         return function;
     }
 }
