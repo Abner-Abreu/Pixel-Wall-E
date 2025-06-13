@@ -13,10 +13,11 @@ n <- k * 2
 f <- 4 >= 2 && 4 == 4 || 4 <= 2 || IsBrushColor(""Blue"")
 actual_x <- GetActualX()
 i <- 3 % 2 + 4 ** 2 - 10 / 2
-IsBrushSize(IsBrushSize())
+IsBrushSize(GetActualY())
 loop1
 DrawLine(1,0,1)
 i <- i + 1
+Malanga
 is_brush_color_blue <- IsBrushColor(""Blue"")
 GoTo[Malanga](1 == 1)
 Color(""Blue"")
@@ -32,6 +33,11 @@ loop_ends_here";
         foreach (var item in parser.Program)
         {
             ASTPrinter.PrintAST(item, 0);
+        }
+        SementicChecker checker = new SementicChecker(parser.Program);
+        foreach (var erro in checker.SemanticErrors)
+        {
+            Console.WriteLine(erro.GetError());
         }
     }
 }

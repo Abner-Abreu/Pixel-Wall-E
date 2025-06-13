@@ -12,14 +12,4 @@ public class Number : Atom
         Type = ExpressionType.NUM;
     }
 
-    public override bool CheckSemantic(Context context, List<Error> semanticErrors)
-    {
-        return true;
-    }
-
-    public override void Evaluate()
-    {
-        return;
-    }
-
 }

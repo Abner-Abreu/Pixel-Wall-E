@@ -9,10 +9,6 @@ public static class ASTPrinter
         {
             Console.WriteLine("Null");
         }
-        if (ast is GoTo)
-        {
-            PrintGoTo((GoTo)ast, deep + 1);
-        }
         if (ast is Binary)
         {
             PrintBinary((Binary)ast, deep + 1);
@@ -25,13 +21,6 @@ public static class ASTPrinter
         {
             PrintFunction((Function)ast, deep + 1);
         }
-    }
-
-    private static void PrintGoTo(GoTo node, int deep)
-    {
-        Console.WriteLine("GoTo");
-        Console.WriteLine("     " + node.Label);
-        PrintAST(node.Condition, deep + 1);
     }
 
     private static void PrintFunction(Function node, int deep)
@@ -91,9 +80,12 @@ public static class ASTPrinter
             case Assing:
                 Console.WriteLine("Assign");
                 break;
+            case GoTo:
+                Console.WriteLine("GoTo");
+                break;
         }
-        PrintAST(node.Right, deep + 1);
         PrintAST(node.Left, deep + 1);
+        PrintAST(node.Right, deep + 1);
     }
     private static void PrintAtom(Atom node)
     {
@@ -107,6 +99,9 @@ public static class ASTPrinter
                 break;
             case Variable:
                 Console.WriteLine("Var");
+                break;
+            case Label:
+                Console.WriteLine(((Label)node).Identifier);
                 break;
         }
     }

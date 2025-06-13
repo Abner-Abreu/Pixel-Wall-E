@@ -43,36 +43,32 @@ public enum ExpressionType
     BOOLEAN,
     VAR,
     ASSING,
+    LABEL,
+    NONE
 }
 
-public enum ReturnType
-{
-    NONE,
-    NUMBER,
-    BOOLEAN,
-}
 public static class Utils
 {
 
-    public static Dictionary<string, (ReturnType returnType, ExpressionType[]  paramType)> Functions = new Dictionary<string, (ReturnType, ExpressionType[])>
+    public static Dictionary<string, (ExpressionType returnType, ExpressionType[]  paramType)> Functions = new Dictionary<string, (ExpressionType, ExpressionType[])>
     {
         //Instructions
-        { "Spawn", (ReturnType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM})},
-        {"Color", (ReturnType.NONE,new ExpressionType[] {ExpressionType.COLOR})},
-        {"Size", (ReturnType.NONE,new ExpressionType[] {ExpressionType.NUM})},
-        {"DrawLine", (ReturnType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM, ExpressionType.NUM})},
-        {"DrawRectangle", (ReturnType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM, ExpressionType.NUM, ExpressionType.NUM, ExpressionType.NUM})},
-        {"DrawCircle", (ReturnType.NONE,new ExpressionType[]{ExpressionType.NUM,ExpressionType.NUM, ExpressionType.NUM})},
-        {"Fill", (ReturnType.NONE,new ExpressionType[] {})},
+        { "Spawn", (ExpressionType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM})},
+        {"Color", (ExpressionType.NONE,new ExpressionType[] {ExpressionType.COLOR})},
+        {"Size", (ExpressionType.NONE,new ExpressionType[] {ExpressionType.NUM})},
+        {"DrawLine", (ExpressionType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM, ExpressionType.NUM})},
+        {"DrawRectangle", (ExpressionType.NONE,new ExpressionType[] {ExpressionType.NUM , ExpressionType.NUM, ExpressionType.NUM, ExpressionType.NUM, ExpressionType.NUM})},
+        {"DrawCircle", (ExpressionType.NONE,new ExpressionType[]{ExpressionType.NUM,ExpressionType.NUM, ExpressionType.NUM})},
+        {"Fill", (ExpressionType.NONE,new ExpressionType[] {})},
 
         //Functions
-        {"GetActualX",(ReturnType.NUMBER, new ExpressionType[]{})},
-        {"GetActualY",(ReturnType.NUMBER, new ExpressionType[]{})},
-        {"GetCanvasSize",(ReturnType.NUMBER, new ExpressionType[]{})},
-        {"GetColorCount",(ReturnType.NUMBER, new ExpressionType[]{ExpressionType.COLOR,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM})},
-        {"IsBrushColor", (ReturnType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
-        {"IsBrushSize", (ReturnType.BOOLEAN, new ExpressionType[]{ExpressionType.NUM})},
-        {"IsCanvasColor", (ReturnType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
+        {"GetActualX",(ExpressionType.NUM, new ExpressionType[]{})},
+        {"GetActualY",(ExpressionType.NUM, new ExpressionType[]{})},
+        {"GetCanvasSize",(ExpressionType.NUM, new ExpressionType[]{})},
+        {"GetColorCount",(ExpressionType.NUM, new ExpressionType[]{ExpressionType.COLOR,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM})},
+        {"IsBrushColor", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
+        {"IsBrushSize", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.NUM})},
+        {"IsCanvasColor", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
     };
     
     public static HashSet<string> Colors = new HashSet<string>

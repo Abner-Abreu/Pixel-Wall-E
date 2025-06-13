@@ -9,25 +9,4 @@ public class Assing : Binary
     {
         Type = ExpressionType.ASSING;
     }
-
-    public override bool CheckSemantic(Context context, List<Error> semanticErrors)
-    {
-        if (Left.Type != ExpressionType.VAR)
-        {
-            semanticErrors.Add(new Error(ErrorType.Semantic, "Left operand most be a variable name", Line, Position));
-            return false;
-        }
-        else if (Right.CheckSemantic(context, semanticErrors) == false)
-        {
-            return false;
-        }
-        Type = Right.Type;
-        return true;
-    }
-
-    public override void Evaluate()
-    {
-        Right.Evaluate();
-        Value = Right.Value;
-    }
 }

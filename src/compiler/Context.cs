@@ -1,23 +1,13 @@
 using Lexical;
-using Parsing;
 public class Context
 {
-    public Dictionary<string, int> Labels { private set; get; }
-    public Dictionary<string, int> Vars { private set; get; }
+    public Dictionary<string, int> Labels { set; get; }
+    public Dictionary<string, (ExpressionType type , object value)> Vars { set; get; }
 
     public Context()
     {
         Labels = new Dictionary<string, int>();
-        Vars = new Dictionary<string, int>();
+        Vars = new Dictionary<string, (ExpressionType type, object value)>();
     }
 
-    private void AddLabel(string label, int line)
-    {
-        Labels[label] = line;
-    }
-
-    private void AddVar(string varName, int value)
-    {
-        Labels[varName] = value;
-    }
 }

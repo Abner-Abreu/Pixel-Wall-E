@@ -5,17 +5,15 @@ namespace Parsing;
 public class Function : Expression
 {
     public string Identifier { private set; get; }
-    public ReturnType Return { private set; get; }
     public List<Expression?> Parameters { set; get; }
 
     public Function(string identifier, int line, int position) : base(line, position)
     {
         Identifier = identifier;
-        Return = Utils.Functions[identifier].returnType;
         Parameters = new List<Expression?>();
     }
 
-    public override bool CheckSemantic(Context context, List<Error> semanticErrors)
+    /*public override bool CheckSemantic(Context context, List<Error> semanticErrors)
     {
         bool check = true;
         if (Parameters.Count != Utils.Functions[Identifier].paramType.Length)
@@ -36,10 +34,6 @@ public class Function : Expression
             }
         }
         return check;
-    }
+    }*/
 
-    public override void Evaluate()
-    {
-        throw new NotImplementedException();
-    }
 }

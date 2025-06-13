@@ -4,17 +4,15 @@ using Lexical;
 using Errors;
 public class Parser
 {
-    public Context Context { private set; get; }
-    public List<Expression?> Program { private set; get; }
-
+    public List<AST?> Program { private set; get; }
+    public List<Token> Labels { private set; get; }
     public List<Error> SintaxErrors { private set; get; }
-    public List<Error> SemanticErrors { private set; get; }
     public Parser(List<List<Token>> tokens)
     {
-        Context = new Context();
-        Program = new List<Expression?>();
+        Program = new List<AST?>();
         SintaxErrors = new List<Error>();
-        SemanticErrors = new List<Error>();
+        Labels = new List<Token>();
+
         foreach (List<Token> tokenLine in tokens)
         {
             if (tokenLine[0].Type == TokenType.LABEL)
@@ -221,17 +219,9 @@ public class Parser
         {
             SintaxErrors.Add(new Error(ErrorType.Syntax, "Label most be the single element in the line", tokens[0].Line, tokens[0].Position));
         }
-        else if (Context.Labels.ContainsKey(tokens[0].Content))
-        {
-            SemanticErrors.Add(new Error(ErrorType.Semantic, "Labels can not be duplicated", tokens[0].Line, tokens[0].Position));
-        }
-        else if (Context.Vars.ContainsKey(tokens[0].Content))
-        {
-            SemanticErrors.Add(new Error(ErrorType.Semantic, "Labels and Variables can not have the same identifier", tokens[0].Line, tokens[0].Position));
-        }
         else
         {
-            Context.Labels.Add(tokens[0].Content, tokens[0].Line);
+            Program.Add(new Label(tokens[0].Content, tokens[0].Line, tokens[0].Position));
         }
     }
 
@@ -240,10 +230,6 @@ public class Parser
         if (tokens[1].Type != TokenType.ASSING)
         {
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Expected assing (""<-"") expresiom", tokens[1].Line, tokens[0].Position));
-        }
-        else if (Context.Labels.ContainsKey(tokens[0].Content))
-        {
-            SemanticErrors.Add(new Error(ErrorType.Semantic, "Labels and Variables can not have the same identifier", tokens[0].Line, tokens[0].Position));
         }
         else
         {
@@ -262,11 +248,6 @@ public class Parser
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""["" expected", tokens[1].Line, tokens[1].Position));
             return;
         }
-        if (tokens[2].Type != TokenType.LABEL)
-        {
-            SemanticErrors.Add(new Error(ErrorType.Semantic, @"Invalid expression, label expected", tokens[2].Line, tokens[2].Position));
-            return;
-        }
         if (tokens[3].Type != TokenType.CLOSECOR)
         {
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, ""]"" expected", tokens[3].Line, tokens[3].Position));
@@ -283,8 +264,16 @@ public class Parser
             return;
         }
         GoTo goTo = new GoTo(tokens[0].Line, tokens[0].Position);
-        goTo.Label = tokens[2].Content;
-        goTo.Condition = ParseExpression(tokens, 5, tokens.Count - 2);
+        if (tokens[2].Type == TokenType.LABEL)
+        {
+            goTo.Left = new Label(tokens[2].Content, tokens[2].Line,tokens[2].Position);
+        }
+        else
+        {
+            goTo.Left = null;
+        }
+        
+        goTo.Right = ParseExpression(tokens, 5, tokens.Count - 2);
         Program.Add(goTo);
     }
 

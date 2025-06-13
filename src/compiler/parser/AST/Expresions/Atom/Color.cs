@@ -11,14 +11,4 @@ public class Color : Atom
         Type = ExpressionType.COLOR;
     }
 
-    public override bool CheckSemantic(Context context, List<Error> semanticErrors)
-    {
-        return true;
-    }
-
-    public override void Evaluate()
-    {
-        return;
-    }
-
 }

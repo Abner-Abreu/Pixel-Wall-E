@@ -11,14 +11,4 @@ public class Variable : Atom
         Type = ExpressionType.VAR;
     }
 
-    public override bool CheckSemantic(Context context, List<Error> semanticErrors)
-    {
-        return true;
-    }
-
-    public override void Evaluate()
-    {
-        return;
-    }
-
 }
