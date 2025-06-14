@@ -6,7 +6,8 @@ public enum ErrorType
 {
     Lexical,
     Syntax,
-    Semantic
+    Semantic,
+    Runtime
 }
 public class Error
 {

@@ -1,6 +1,4 @@
 namespace Parsing;
-
-using Errors;
 public class Variable : Atom
 {
 

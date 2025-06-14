@@ -66,9 +66,9 @@ public static class Utils
         {"GetActualY",(ExpressionType.NUM, new ExpressionType[]{})},
         {"GetCanvasSize",(ExpressionType.NUM, new ExpressionType[]{})},
         {"GetColorCount",(ExpressionType.NUM, new ExpressionType[]{ExpressionType.COLOR,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM,ExpressionType.NUM})},
-        {"IsBrushColor", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
-        {"IsBrushSize", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.NUM})},
-        {"IsCanvasColor", (ExpressionType.BOOLEAN, new ExpressionType[]{ExpressionType.COLOR})},
+        {"IsBrushColor", (ExpressionType.NUM, new ExpressionType[]{ExpressionType.COLOR})},
+        {"IsBrushSize", (ExpressionType.NUM, new ExpressionType[]{ExpressionType.NUM})},
+        {"IsCanvasColor", (ExpressionType.NUM, new ExpressionType[]{ExpressionType.COLOR})},
     };
     
     public static HashSet<string> Colors = new HashSet<string>
