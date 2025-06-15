@@ -1,5 +1,6 @@
 namespace Parsing;
 
+using System.Collections.Generic;
 using Lexical;
 using Errors;
 public class Parser

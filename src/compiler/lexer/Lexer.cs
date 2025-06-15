@@ -1,5 +1,7 @@
 namespace Lexical;
+
 using Errors;
+using System.Collections.Generic;
 public class Lexer
 {
     public List<List<Token>> Tokens { private set; get; }
@@ -19,7 +21,7 @@ public class Lexer
 
             if (input[i] == '\n'|| i + 1 == input.Length)
             {
-                if (lineTokens.Count() != 0)
+                if (lineTokens.Count != 0)
                 {
                     CheckVars(lineTokens);
                     tokens.Add(lineTokens);

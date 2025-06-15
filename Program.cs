@@ -1,5 +1,6 @@
-﻿using Lexical;
-using Errors;
+﻿/*
+using Lexical;
+using System.Console    
 using Parsing;
 public class Program
 {
@@ -45,3 +46,4 @@ loop_ends_here";
         }
     }
 }
+*/

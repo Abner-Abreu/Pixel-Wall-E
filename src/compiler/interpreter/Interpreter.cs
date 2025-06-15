@@ -1,17 +1,19 @@
+namespace Interpret;
+
 using Parsing;
 using Boolean = Parsing.Boolean;
-using Canvas;
 using Errors;
+using System.Collections.Generic;
+using System;
 
-namespace Evaluate;
-
-public class Evaluator
+public class Interpreter
 {
     public List<Error> RuntimeErrors { private set; get; }
     public Context Context { private set; get; }
-
     public ICanvas Canva { private set; get; }
-    public Evaluator(List<Expression> nodes, ref ICanvas canvas, Context context)
+
+    private bool SpawnFound;
+    public Interpreter(List<AST> nodes, ref Canvas canvas, Context context)
     {
         RuntimeErrors = new List<Error>();
         Canva = canvas;
@@ -19,8 +21,23 @@ public class Evaluator
         Evaluate(nodes, 0);
     }
 
-    private void Evaluate(List<Expression> nodes, int index)
+    private void Evaluate(List<AST> nodes, int index)
     {
+        //Check if first line is Spawn
+        if (nodes[0] is not Function)
+        {
+            RuntimeErrors.Add(new Error(ErrorType.Runtime, "First line most be a Spawn", nodes[0].Line, nodes[0].Position));
+            return;
+        }
+        else
+        {
+            if (((Function)nodes[0]).Identifier != "Spawn")
+            {
+                RuntimeErrors.Add(new Error(ErrorType.Runtime, "First line most be a Spawn", nodes[0].Line, nodes[0].Position));
+                return;
+            }
+        }
+        
         for (int i = index; i < nodes.Count; i++)
         {
             if (RuntimeErrors.Count > 0)
@@ -39,7 +56,7 @@ public class Evaluator
             Evaluate(nodes[i]);
         }
     }
-    private object? Evaluate(Expression node)
+    private object? Evaluate(AST node)
     {
         if (CheckErrors() == true)
         {
@@ -64,10 +81,11 @@ public class Evaluator
 
     private bool CheckErrors()
     {
-        return RuntimeErrors.Count > 0 || Canva.IsErrorFind();
+        RuntimeErrors.Add(Canva.GetErrors());
+        return RuntimeErrors.Count > 0;
     }
 
-    private void EvaluateGoTo(GoTo goTo, List<Expression> nodes, int index)
+    private void EvaluateGoTo(GoTo goTo, List<AST> nodes, int index)
     {
         if ((int)Evaluate(goTo.Left) == 1)
         {
@@ -85,7 +103,15 @@ public class Evaluator
         switch (node)
         {
             case Variable:
-                return Context.Vars[((Variable)node).VarName].value;
+                if (Context.Vars.ContainsKey(((Variable)node).VarName))
+                {
+                    return Context.Vars[((Variable)node).VarName].value;
+                }
+                else
+                {
+                    RuntimeErrors.Add(new Error(ErrorType.Runtime, "Unnasigned variable use", node.Line, node.Position));
+                    return null;
+                }
             case Color:
                 return ((Color)node).Content;
             case Number:
@@ -158,15 +184,22 @@ public class Evaluator
 
     private int? EvaluateFunction(Function function)
     {
+        Canva.SetExecutePosition(function);
         switch (function.Identifier)
         {
             case "Spawn":
+                if (SpawnFound)
+                {
+                    RuntimeErrors.Add(new Error(ErrorType.Runtime, "Spawn instruction can not be duplicated", function.Line, function.Position));
+                    return null;
+                }
                 int x = (int)Evaluate(function.Parameters[0]);
                 int y = (int)Evaluate(function.Parameters[0]);
 
                 if (CheckErrors()) return null;
 
                 Canva.Spawn(x, y);
+                SpawnFound = true;
                 return null;
             case "Color":
                 string color = (string)Evaluate(function.Parameters[0]);

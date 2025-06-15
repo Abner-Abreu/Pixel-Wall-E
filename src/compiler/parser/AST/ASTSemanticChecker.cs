@@ -1,7 +1,7 @@
 using Parsing;
 using Errors;
 using Boolean = Parsing.Boolean;
-
+using System.Collections.Generic;
 public class SementicChecker
 {
     public Context Context { private set; get; }

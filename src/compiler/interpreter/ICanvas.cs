@@ -1,8 +1,10 @@
-namespace Canvas;
+using Errors;
+using Parsing;
 
 public interface ICanvas
 {
-    abstract bool IsErrorFind();
+    abstract Error GetErrors();
+    abstract void SetExecutePosition(AST node);
     abstract void Spawn(int x, int y);
     abstract void Color(string color);
     abstract void Size(int size);
