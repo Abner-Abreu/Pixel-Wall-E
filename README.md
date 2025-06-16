@@ -28,7 +28,7 @@ Un programa que permite **interpretar código** y **dibujar en un canvas** en un
 1. **Clona el repositorio:**
 
    ```bash
-   git clone https://github.com/tuusuario/PixelArtCodeInterpreter.git
+   https://github.com/Abner-Abreu/Pixel-Wall-E.git
 2. **Abre el proyecto en Godot:**
 
 - Ejecuta Godot 4.4 Mono.
