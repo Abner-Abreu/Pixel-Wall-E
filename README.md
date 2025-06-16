@@ -41,7 +41,9 @@ Un programa que permite **interpretar código** y **dibujar en un canvas** en un
 
 - Asegúrate de tener el .NET SDK instalado.
 
-▶️ Ejecución
+---
+
+## ▶️ Ejecución
 
 **Desde el editor Godot:**
 
