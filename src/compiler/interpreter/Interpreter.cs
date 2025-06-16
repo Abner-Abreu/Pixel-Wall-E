@@ -5,7 +5,6 @@ using Boolean = Parsing.Boolean;
 using Errors;
 using System.Collections.Generic;
 using System;
-
 public class Interpreter
 {
     public List<Error> RuntimeErrors { private set; get; }
@@ -13,7 +12,7 @@ public class Interpreter
     public ICanvas Canva { private set; get; }
 
     private bool SpawnFound;
-    public Interpreter(List<AST> nodes, ref Canvas canvas, Context context)
+    public Interpreter(List<AST> nodes, Canvas canvas, Context context)
     {
         RuntimeErrors = new List<Error>();
         Canva = canvas;
@@ -37,7 +36,7 @@ public class Interpreter
                 return;
             }
         }
-        
+
         for (int i = index; i < nodes.Count; i++)
         {
             if (RuntimeErrors.Count > 0)
@@ -46,8 +45,7 @@ public class Interpreter
             }
             if (nodes[i] is GoTo)
             {
-                EvaluateGoTo((GoTo)nodes[i], nodes, index);
-                return;
+                i = EvaluateGoTo((GoTo)nodes[i], nodes, i);
             }
             if (nodes[i] is Label)
             {
@@ -81,24 +79,50 @@ public class Interpreter
 
     private bool CheckErrors()
     {
-        RuntimeErrors.Add(Canva.GetErrors());
+        if (Canva.GetErrors() != null)
+        {
+            RuntimeErrors.Add(Canva.GetErrors());
+        }
         return RuntimeErrors.Count > 0;
     }
 
-    private void EvaluateGoTo(GoTo goTo, List<AST> nodes, int index)
+    private int EvaluateGoTo(GoTo goTo, List<AST> nodes, int index)
     {
-        if ((int)Evaluate(goTo.Left) == 1)
+        // Validar Left
+        object cond = Evaluate(goTo.Right);
+        if (cond is not int condInt)
         {
-            string label = ((Label)goTo.Right).Identifier;
-            Evaluate(nodes, Context.Labels[label]);
+            RuntimeErrors.Add(new Error(ErrorType.Runtime, "Invalid condition for GoTo", goTo.Line, goTo.Position));
+            return index;
         }
-        else
+
+        if (condInt == 1)
         {
-            Evaluate(nodes, index);
+            if (goTo.Left is not Label lbl)
+            {
+                RuntimeErrors.Add(new Error(ErrorType.Runtime, "GoTo must reference a Label", goTo.Line, goTo.Position));
+                return index;
+            }
+
+            if (!Context.Labels.ContainsKey(lbl.Identifier))
+            {
+                RuntimeErrors.Add(new Error(ErrorType.Runtime, $"Label '{lbl.Identifier}' not found", goTo.Line, goTo.Position));
+                return index;
+            }
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].Line >= Context.Labels[lbl.Identifier])
+                {
+                    return i;
+                }
+            }
         }
+
+        return index;
     }
 
-    private object? EvaluateAtom(Atom node)
+
+    private object EvaluateAtom(Atom node)
     {
         switch (node)
         {
@@ -212,6 +236,10 @@ public class Interpreter
                 int size = (int)Evaluate(function.Parameters[0]);
 
                 if (CheckErrors()) return null;
+                if (size % 2 == 0)
+                {
+                    size -= 1;
+                }
 
                 Canva.Size(size);
                 return null;
@@ -286,5 +314,5 @@ public class Interpreter
                 return Canva.IsCanvasColor(CanvaColor, Horizontal, Vertical);
         }
         return null;
-    }    
+    }
 }

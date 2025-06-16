@@ -1,5 +1,6 @@
 using Parsing;
 using System;
+using Malanga = Godot.GD;
 public static class ASTPrinter
 {
     public static void PrintAST(AST? ast, int deep)
@@ -7,7 +8,7 @@ public static class ASTPrinter
         PrintDeep(deep);
         if (ast is null)
         {
-            Console.WriteLine("Null");
+            Malanga.Print("Null");
         }
         if (ast is Binary)
         {
@@ -25,7 +26,6 @@ public static class ASTPrinter
 
     private static void PrintFunction(Function node, int deep)
     {
-        Console.WriteLine(node.Identifier);
         foreach (AST? ast in node.Parameters)
         {
             PrintAST(ast, deep + 1);
@@ -38,50 +38,50 @@ public static class ASTPrinter
         {
             //Arithmethic
             case Add:
-                Console.WriteLine("Add");
+                Malanga.Print("Add");
                 break;
             case Subs:
-                Console.WriteLine("Subs");
+                Malanga.Print("Subs");
                 break;
             case Mult:
-                Console.WriteLine("Mult");
+                Malanga.Print("Mult");
                 break;
             case Div:
-                Console.WriteLine("Div");
+                Malanga.Print("Div");
                 break;
             case Pow:
-                Console.WriteLine("Pow");
+                Malanga.Print("Pow");
                 break;
             case Mod:
-                Console.WriteLine("Mod");
+                Malanga.Print("Mod");
                 break;
             //Boolean
             case Equal:
-                Console.WriteLine("Equal");
+                Malanga.Print("Equal");
                 break;
             case Less:
-                Console.WriteLine("Less");
+                Malanga.Print("Less");
                 break;
             case Less_Equal:
-                Console.WriteLine("Less_Equal");
+                Malanga.Print("Less_Equal");
                 break;
             case More:
-                Console.WriteLine("More");
+                Malanga.Print("More");
                 break;
             case More_Equal:
-                Console.WriteLine("More_Equal");
+                Malanga.Print("More_Equal");
                 break;
             case Or:
-                Console.WriteLine("Or");
+                Malanga.Print("Or");
                 break;
             case And:
-                Console.WriteLine("And");
+                Malanga.Print("And");
                 break;
             case Assing:
-                Console.WriteLine("Assign");
+                Malanga.Print("Assign");
                 break;
             case GoTo:
-                Console.WriteLine("GoTo");
+                Malanga.Print("GoTo");
                 break;
         }
         PrintAST(node.Left, deep + 1);
@@ -92,16 +92,16 @@ public static class ASTPrinter
         switch (node)
         {
             case Number:
-                Console.WriteLine("Num");
+                Malanga.Print("Num");
                 break;
             case Color:
-                Console.WriteLine("Color");
+                Malanga.Print("Color");
                 break;
             case Variable:
-                Console.WriteLine("Var");
+                Malanga.Print("Var");
                 break;
             case Label:
-                Console.WriteLine(((Label)node).Identifier);
+                Malanga.Print(((Label)node).Identifier);
                 break;
         }
     }

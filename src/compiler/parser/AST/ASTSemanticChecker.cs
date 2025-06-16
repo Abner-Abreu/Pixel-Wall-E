@@ -12,8 +12,26 @@ public class SementicChecker
         Context = new Context();
         SemanticErrors = new List<Error>();
 
+        foreach (AST node in program)
+        {
+            if (node is Label)
+            {
+                CheckAtom((Atom)node, Context, SemanticErrors);
+            }
+        }
+
         foreach (AST? node in program)
         {
+            if (node is Label)
+            {
+                continue;
+            }
+            if (node == null)
+            {
+                SemanticErrors.Add(new Error(ErrorType.Semantic, "Null node in AST program list", 0, 0));
+                continue;
+            }
+
             CheckSemantic(node, Context, SemanticErrors);
         }
     }
@@ -33,8 +51,8 @@ public class SementicChecker
                 return CheckGoTo((GoTo)node, context, semanticErrors);
             case Assing:
                 return CheckAssign((Assing)node, context, semanticErrors);
+            default: return false;
         }
-        return false;
     }
     private bool CheckAtom(Atom? atom, Context context, List<Error> sementicErrors)
     {

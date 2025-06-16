@@ -6,13 +6,11 @@ using Errors;
 public class Parser
 {
     public List<AST?> Program { private set; get; }
-    public List<Token> Labels { private set; get; }
     public List<Error> SintaxErrors { private set; get; }
     public Parser(List<List<Token>> tokens)
     {
         Program = new List<AST?>();
         SintaxErrors = new List<Error>();
-        Labels = new List<Token>();
 
         foreach (List<Token> tokenLine in tokens)
         {
@@ -42,6 +40,7 @@ public class Parser
 
     private Expression? ParseExpression(List<Token> tokens, int first, int last)
     {
+        
         if (IsBooleanExpression(tokens, first, last)) return ParseBooleanExpression(tokens, first, last);
         if (IsArithmethicExpression(tokens, first, last)) return ParseArithmethicExpression(tokens, first, last);
         if (tokens[first].Type == TokenType.FUNCTION) return ParseFunctionExpression(tokens, first, last);
@@ -267,6 +266,7 @@ public class Parser
         GoTo goTo = new GoTo(tokens[0].Line, tokens[0].Position);
         if (tokens[2].Type == TokenType.LABEL)
         {
+            
             goTo.Left = new Label(tokens[2].Content, tokens[2].Line,tokens[2].Position);
         }
         else
@@ -307,11 +307,7 @@ public class Parser
             SintaxErrors.Add(new Error(ErrorType.Syntax, @"Invalid expression, "")"" expected", tokens[last].Line, tokens[last].Position));
             return null;
         }
-        if (tokens[last].Type != TokenType.CLOSEPAR)
-            {
-
-                return null;
-            }
+        
         Function function = new Function(tokens[first].Content, tokens[first].Line, tokens[first].Position);
         int checkPoint = first + 2;
         if (tokens[checkPoint].Type == TokenType.CLOSEPAR) return function;

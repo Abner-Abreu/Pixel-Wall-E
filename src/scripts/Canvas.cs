@@ -29,10 +29,9 @@ public partial class Canvas : Node2D, ICanvas
         }
         //Set brush position
         BrushPosition = new Vector2(CanvasSize / 2, CanvasSize / 2);
-        CurrentColor = Colors.Red;
+        CurrentColor = Colors.Transparent;
         BrushSize = 1;
-
-        DrawLine(0, -1, 5);
+        QueueRedraw();
     }
 
     public override void _Draw()
@@ -66,7 +65,7 @@ public partial class Canvas : Node2D, ICanvas
     #region ICanvas Functions
     public void Spawn(int x, int y)
     {
-        if (x < 0 || y < 0 || x > CanvasSize || y > CanvasSize)
+        if (IsInsideCanvas(x, y) == false)
         {
             error = new Errors.Error(ErrorType.Runtime, "Spawn point out of the canvas", ExecutePosition.line, ExecutePosition.position);
         }
@@ -82,6 +81,19 @@ public partial class Canvas : Node2D, ICanvas
     }
     public void DrawCircle(int dirX, int dirY, int radius)
     {
+        //Validate directions
+        if (dirX > 1) dirX = 1;
+        if (dirX < -1) dirX = -1;
+        if (dirY > 1) dirY = 1;
+        if (dirY < -1) dirY = -1;
+        //Check radius direction
+        if (radius < 0)
+        {
+            radius *= -1;
+            dirX *= -1;
+            dirY *= -1;
+        }
+        
         //Set initial position
         int newX = (int)BrushPosition.X;
         int newY = (int)BrushPosition.Y;
@@ -121,11 +133,32 @@ public partial class Canvas : Node2D, ICanvas
             }
             x++;
         }
-
+        if (IsInsideCanvas(newX, newY))
+        {
+            BrushPosition = new Vector2(newX, newY);
+            return;
+        }
+        else
+        {
+            error = new Errors.Error(ErrorType.Runtime, "Wall-E position out of the canvas", ExecutePosition.line, ExecutePosition.position);
+        }
     }
 
     public void DrawLine(int dirX, int dirY, int distance)
     {
+        //Validate directions
+        if (dirX > 1) dirX = 1;
+        if (dirX < -1) dirX = -1;
+        if (dirY > 1) dirY = 1;
+        if (dirY < -1) dirY = -1;
+        //Check distance direction
+        if (distance < 0)
+        {
+            distance *= -1;
+            dirX *= -1;
+            dirY *= -1;
+        }
+
         //Set initial position
         int x = (int)BrushPosition.X;
         int y = (int)BrushPosition.Y;
@@ -153,6 +186,19 @@ public partial class Canvas : Node2D, ICanvas
 
     public void DrawRectangle(int dirX, int dirY, int distance, int width, int height)
     {
+        //Validate directions
+        if (dirX > 1) dirX = 1;
+        if (dirX < -1) dirX = -1;
+        if (dirY > 1) dirY = 1;
+        if (dirY < -1) dirY = -1;
+        //Check distance direction
+        if (distance < 0)
+        {
+            distance *= -1;
+            dirX *= -1;
+            dirY *= -1;
+        }
+        
         //Set initial position
         int x = (int)BrushPosition.X;
         int y = (int)BrushPosition.Y;
@@ -188,21 +234,30 @@ public partial class Canvas : Node2D, ICanvas
     {
         int aux = BrushSize;
         BrushSize = 1;
-        Fill(CurrentColor, (int)BrushPosition.X, (int)BrushPosition.Y);
+        Fill(Grid[(int)BrushPosition.X, (int)BrushPosition.Y], (int)BrushPosition.X, (int)BrushPosition.Y);
         BrushSize = aux;
     }
 
-    private void Fill(Godot.Color color, int x, int y)
+    private void Fill(Godot.Color initialColor, int x, int y)
     {
-        if (IsInsideCanvas(x, y) && Grid[x, y] == color)
+        if (!IsInsideCanvas(x, y) || Grid[x, y] != initialColor)
+            return;
+
+        DrawPixel(x, y, CurrentColor);
+        Grid[x, y] = CurrentColor; // Asegúrate de evitar rellenos infinitos
+
+        foreach (var dir in Directions)
         {
-            DrawPixel(x, y, color);
-            foreach (var dir in Directions)
+            int newX = x + dir.x;
+            int newY = y + dir.y;
+
+            if (IsInsideCanvas(newX, newY) && Grid[newX, newY] == initialColor)
             {
-                Fill(color, x + dir.x, y + dir.y);
+                Fill(initialColor, newX, newY);
             }
         }
     }
+
 
     (int x, int y)[] Directions = { (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1) };
     public int GetActualX()
@@ -266,6 +321,10 @@ public partial class Canvas : Node2D, ICanvas
 
     public void Size(int size)
     {
+        if (size % 2 == 0)
+        {
+            BrushSize = size - 1;
+        }
         BrushSize = size;
     }
 
@@ -278,16 +337,17 @@ public partial class Canvas : Node2D, ICanvas
     #region Auxiliar Functions
     private void DrawPixel(int x, int y, Godot.Color color)
     {
-        for (int i = (int)BrushPosition.Y - BrushSize; i < (int)BrushPosition.Y + BrushSize; i++)
+        for (int i = y - (BrushSize / 2); i <= y + (BrushSize / 2); i++)
         {
-            for (int j = (int)BrushPosition.X - BrushSize; j < (int)BrushPosition.X + BrushSize; j++)
+            for (int j = x - (BrushSize / 2); j <= x + (BrushSize / 2); j++)
             {
                 if (IsInsideCanvas(j, i))
                 {
-                    Grid[x, y] = color;
+                    Grid[j, i] = color;
                 }
             }
         }
+
         QueueRedraw();
     }
     private Godot.Color ToColor(string color)
@@ -320,7 +380,19 @@ public partial class Canvas : Node2D, ICanvas
 
     private bool IsInsideCanvas(int x, int y)
     {
-        return x < CanvasSize && x > 0 && y < CanvasSize && y > 0;
+        return x < CanvasSize && x >= 0 && y < CanvasSize && y >= 0;
+    }
+
+    private bool IsDirection(int x, int y)
+    {
+        foreach (var dir in Directions)
+        {
+            if (dir.x == x && dir.y == y)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     #endregion
 }

@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://clt4mk1egtrh6"]
+[gd_scene load_steps=5 format=3 uid="uid://clt4mk1egtrh6"]
 
 [ext_resource type="Script" uid="uid://81q8ru0gsltk" path="res://scripts/MainWindow.cs" id="1_7qsqj"]
 [ext_resource type="Script" uid="uid://68ejdoni70gq" path="res://scripts/Canvas.cs" id="2_3ygwi"]
-[ext_resource type="Script" uid="uid://cblqsb10yxyry" path="res://Run.cs" id="2_mgnd2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mgnd2"]
+bg_color = Color(0, 0, 0, 0.905882)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ygwi"]
+bg_color = Color(0.104545, 0.123429, 0.120283, 1)
+border_blend = true
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_7qsqj")
@@ -13,6 +19,8 @@ script = ExtResource("1_7qsqj")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -2.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -25,7 +33,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 text = "Run"
-script = ExtResource("2_mgnd2")
 
 [node name="Save" type="Button" parent="UI/VSplitContainer/ToolBar"]
 layout_mode = 2
@@ -48,6 +55,11 @@ text = "Resize"
 [node name="CanvasSize" type="SpinBox" parent="UI/VSplitContainer/ToolBar"]
 layout_mode = 2
 size_flags_horizontal = 10
+min_value = 10.0
+max_value = 256.0
+value = 10.0
+rounded = true
+allow_lesser = true
 
 [node name="HSplitContainer" type="HSplitContainer" parent="UI/VSplitContainer"]
 layout_mode = 2
@@ -63,22 +75,26 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Spawn(0,0)
 Color(\"White\")
+DrawLine(1,1,5)
 "
 placeholder_text = "
 "
 scroll_smooth = true
 caret_blink = true
+highlight_all_occurrences = true
+highlight_current_line = true
 gutters_draw_line_numbers = true
 indent_automatic = true
-auto_brace_completion_enabled = true
 
 [node name="Canvas" type="VBoxContainer" parent="UI/VSplitContainer/HSplitContainer"]
+clip_contents = true
 layout_mode = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="UI/VSplitContainer/HSplitContainer/Canvas"]
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 8.78
+size_flags_stretch_ratio = 1.74
 
 [node name="SubViewport" type="SubViewport" parent="UI/VSplitContainer/HSplitContainer/Canvas/SubViewportContainer"]
 handle_input_locally = false
@@ -90,8 +106,24 @@ script = ExtResource("2_3ygwi")
 [node name="Console" type="RichTextLabel" parent="UI/VSplitContainer/HSplitContainer/Canvas"]
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 9.2
+size_flags_stretch_ratio = 3.04
+theme_override_styles/fill = SubResource("StyleBoxFlat_mgnd2")
+theme_override_styles/background = SubResource("StyleBoxFlat_3ygwi")
+text = "Console"
+scroll_following = true
 
 [node name="FileSave" type="FileDialog" parent="."]
+filters = PackedStringArray("*.pw")
 
 [node name="FileLoad" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+filters = PackedStringArray("*.pw")
+
+[connection signal="pressed" from="UI/VSplitContainer/ToolBar/Run" to="." method="_on_run_pressed"]
+[connection signal="pressed" from="UI/VSplitContainer/ToolBar/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="UI/VSplitContainer/ToolBar/Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="UI/VSplitContainer/ToolBar/Resize" to="." method="_on_resize_pressed"]
+[connection signal="file_selected" from="FileSave" to="." method="_on_save_file_selected"]
+[connection signal="file_selected" from="FileLoad" to="." method="_on_load_file_selected"]
