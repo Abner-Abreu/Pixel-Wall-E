@@ -13,7 +13,14 @@ config_version=5
 config/name="Pixel Wall-E"
 run/main_scene="uid://clt4mk1egtrh6"
 config/features=PackedStringArray("4.4", "C#", "GL Compatibility")
+boot_splash/bg_color=Color(0.113665, 0.113665, 0.113665, 1)
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1160
+window/size/viewport_height=620
+window/bg_color=Color(0.14, 0.14, 0.14, 1)
 
 [dotnet]
 

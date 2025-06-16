@@ -1,23 +1,24 @@
 using Lexical;
-using Errors;
 using Parsing;
 using Interpret;
 using System.Collections.Generic;
-using System.Linq;
+using Godot;
 
 namespace Compilation;
 public class Compiler
 {
-    public List<Error> errors { private set; get; }
+    public List<Errors.Error> errors { private set; get; }
 
-    public Compiler(string code, ref Canvas canvas)
+    public Compiler(string code, Canvas canvas)
     {
+        errors = new List<Errors.Error>();
         Lexer lexer = new Lexer(code);
         errors = lexer.LexicalErrors;
         if (errors.Count > 0)
         {
             return;
         }
+        GD.Print("Lexical Analisis Successfull");
 
         Parser parser = new Parser(lexer.Tokens);
         errors = parser.SintaxErrors;
@@ -25,6 +26,7 @@ public class Compiler
         {
             return;
         }
+        GD.Print("Parsing Analisis Successfull");
 
         SementicChecker sementicChecker = new SementicChecker(parser.Program);
         errors = sementicChecker.SemanticErrors;
@@ -32,8 +34,15 @@ public class Compiler
         {
             return;
         }
+        GD.Print("Semantic Analisis Successfull");
+        
+        Interpreter interpreter = new Interpreter(parser.Program, canvas, sementicChecker.Context);
 
-        Interpreter interpreter = new Interpreter(parser.Program, ref canvas, sementicChecker.Context);
-        errors = interpreter.RuntimeErrors;
+
+        if (interpreter.RuntimeErrors.Count > 0)
+        {
+            return;
+        }
+        GD.Print("Execution Successfull");
     }
 }

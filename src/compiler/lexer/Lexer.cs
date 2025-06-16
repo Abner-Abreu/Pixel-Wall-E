@@ -19,16 +19,17 @@ public class Lexer
             currentPosition++;
             if (input[i] == ' ' || input[i] == '\t' || input[i] == '\r') continue;
 
-            if (input[i] == '\n'|| i + 1 == input.Length)
+            if (input[i] == '\n' || i + 1 == input.Length)
             {
                 if (lineTokens.Count != 0)
                 {
                     CheckVars(lineTokens);
+                    lineTokens = CheckNegativeNumbers(lineTokens);
                     tokens.Add(lineTokens);
                     lineTokens = new List<Token>();
                 }
                 currentPosition = 0;
-                currentLine+= 1;
+                currentLine += 1;
                 continue;
             }
 
@@ -300,16 +301,56 @@ public class Lexer
         {
             tokenLine[0] = new Token(TokenType.VAR, tokenLine[0]);
         }
+
         if (tokenLine[0].Type == TokenType.VAR || tokenLine[0].Type == TokenType.FUNCTION)
+        {
+            for (int i = 1; i < tokenLine.Count; i++)
             {
-                for (int i = 1; i < tokenLine.Count; i++)
+                if (tokenLine[i].Type == TokenType.LABEL)
                 {
-                    if (tokenLine[i].Type == TokenType.LABEL)
-                    {
-                        tokenLine[i] = new Token(TokenType.VAR, tokenLine[i]);
-                    }
+                    tokenLine[i] = new Token(TokenType.VAR, tokenLine[i]);
                 }
             }
+        }
+
+        if (tokenLine[0].Type == TokenType.GOTO)
+        {
+            bool openParFind = false;
+            for (int i = 1; i < tokenLine.Count; i++)
+            {
+                if (openParFind == true && tokenLine[i].Type == TokenType.LABEL)
+                {
+                    tokenLine[i] = new Token(TokenType.VAR, tokenLine[i]);
+                }
+                if (tokenLine[i].Type == TokenType.OPENPAR)
+                {
+                    openParFind = true;
+                }
+            }
+        }
+    }
+
+    private List<Token> CheckNegativeNumbers(List<Token> tokenLine)
+    {
+        List<Token> newLine = new List<Token>();
+        for (int i = 0; i < tokenLine.Count - 1; i++)
+        {
+            if (tokenLine[i].Type == TokenType.MINUS && i - 1 >= 0 && tokenLine[i + 1].Type == TokenType.NUM
+            && tokenLine[i - 1].Type != TokenType.VAR
+            && tokenLine[i - 1].Type != TokenType.FUNCTION
+            && tokenLine[i - 1].Type != TokenType.NUM)
+            {
+                string newNum = "-" + tokenLine[i + 1].Content;
+                newLine.Add(new Token(TokenType.NUM, newNum, tokenLine[i].Line, tokenLine[i].Position));
+                i++;
+            }
+            else
+            {
+                newLine.Add(tokenLine[i]);
+            }
+        }
+        newLine.Add(tokenLine[^1]);
+        return newLine;
     }
 
 }

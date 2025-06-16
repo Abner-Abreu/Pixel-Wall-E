@@ -1,8 +1,7 @@
 using Godot;
 using System;
-using Interpret;
-using Lexical;
 using Compilation;
+using System.IO;
 public partial class MainWindow : Node2D
 {
     private CodeEdit codeEdit;
@@ -32,25 +31,14 @@ public partial class MainWindow : Node2D
 
     private void SetupSytaxHighLighting()
     {
-        var highlighther = new CodeHighlighter();
+        var highlighter = new CodeHighlighter();
 
-        //Functions
-        string[] functions =
-        {
-            "Spawn", "Color", "Size", "DrawLine", "DrawRectangle",
-            "DrawCircle", "Fill", "GetActualX", "GetActualY",
-            "GetCanvasSize", "GetColorCount", "IsBrushColor",
-            "IsBrushSize", "IsCanvasColor"
-        };
-        foreach (var word in functions)
-        {
-            highlighther.AddKeywordColor(word, new Color(0.863f, 0.808f, 0.667f));
-        }
 
-        //Numbers
-        highlighther.NumberColor = new Color(0.710f, 0.808f, 0.659f);
+        highlighter.NumberColor = new Color(0.710f, 0.808f, 0.659f);
+        highlighter.SymbolColor = new Color(0.831f, 0.455f, 0.553f);
+        highlighter.FunctionColor = new Color(0.529f, 0.737f, 0.992f);
 
-        codeEdit.SyntaxHighlighter = highlighther;
+        codeEdit.SyntaxHighlighter = highlighter;
     }
 
     private void ResizeCanvas()
@@ -59,9 +47,91 @@ public partial class MainWindow : Node2D
         canvas.Initialize(size);
     }
 
-    public void on_run_button_pressed()
+    public void _on_run_pressed()
     {
-        compiler = new Compiler(codeEdit.Text, ref canvas);
+        try
+        {
+            compiler = new Compiler(codeEdit.Text + " ", canvas);
+        }
+        catch (Exception ex)
+        {
+            console.Text = $"Error al crear Compiler: {ex.Message}";
+            return;
+        }
+        console.Text = "";
+        if (compiler.errors.Count > 0)
+        {
+
+            foreach (var error in compiler.errors)
+            {
+                console.AppendText($"[color=red]{error.GetError()}[/color]\n");
+            }
+        }
+        else
+        {
+            console.AppendText($"[color=green]Compilation Successfull[/color]\n");
+        }
+    }
+
+    public void _on_load_pressed()
+    {
+        fileLoad.PopupCentered(new Vector2I(600, 400));
+    }
+
+    public void _on_save_pressed()
+    {
+        if (string.IsNullOrEmpty(currentFilePath))
+        {
+            fileSave.PopupCentered(new Vector2I(600, 400));
+        }
+        else
+        {
+            SaveFile(currentFilePath);
+        }
+    }
+
+    public void _on_load_file_selected(string path)
+    {
+        string sistemPath = ProjectSettings.GlobalizePath(path);
+        try
+        {
+            codeEdit.Text = File.ReadAllText(sistemPath);
+            currentFilePath = sistemPath;
+            console.Text = $"File load success\n";
+        }
+        catch (Exception ex)
+        {
+            console.Text = $"Error when loading file: {ex}\n";
+        }
+    }
+
+    public void _on_save_file_selected(string path)
+    {
+        SaveFile(path);
+    }
+
+    private void SaveFile(string path)
+    {
+        try
+        {
+            string sistemPath = ProjectSettings.GlobalizePath(path);
+            
+            var dir = Path.GetDirectoryName(sistemPath);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            File.WriteAllText(sistemPath, codeEdit.Text);
+            currentFilePath = sistemPath;
+            console.Text = $"File saved successfully\n";
+        }
+        catch (Exception ex)
+        {
+            console.Text = $"Error when saving file: {ex.Message}\n";
+        }
+    }
+    public void _on_resize_pressed()
+    {
+        ResizeCanvas();
     }
 
 
