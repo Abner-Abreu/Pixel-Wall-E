@@ -10,7 +10,7 @@ Un programa que permite **interpretar código** y **dibujar en un canvas** en un
 - **Canvas interactivo:** Dibuja en tiempo real sobre un canvas.
 - **Estilo pixel art:** Herramientas pensadas para crear arte a baja resolución.
 - **Interfaz intuitiva:** Basada en Godot 4.4 Mono con soporte completo para C#.
-- **Configuración personalizable:** Ajusta parámetros como el tamaño del brush, colores y tamño del canvas.
+- **Configuración personalizable:** Ajusta parámetros como el tamaño del brush, colores y tamaño del canvas.
 
 ---
 
