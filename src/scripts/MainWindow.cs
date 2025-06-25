@@ -51,7 +51,7 @@ public partial class MainWindow : Node2D
     {
         try
         {
-            compiler = new Compiler(codeEdit.Text + " ", canvas);
+            compiler = new Compiler(codeEdit.Text + "\n ", canvas);
         }
         catch (Exception ex)
         {

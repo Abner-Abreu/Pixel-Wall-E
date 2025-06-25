@@ -343,6 +343,10 @@ public class Lexer
                 string newNum = "-" + tokenLine[i + 1].Content;
                 newLine.Add(new Token(TokenType.NUM, newNum, tokenLine[i].Line, tokenLine[i].Position));
                 i++;
+                if (i == tokenLine.Count - 1)
+                {
+                    return newLine;
+                }
             }
             else
             {

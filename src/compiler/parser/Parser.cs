@@ -172,7 +172,7 @@ public class Parser
             }
         }
         //Search MULT, DIV, MOD expressions
-        for (int i = first; i < last; i++)
+        for (int i = last - 1; i >= first; i--)
         {
             switch (tokens[i].Type)
             {
