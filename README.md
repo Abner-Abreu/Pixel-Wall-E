@@ -1,56 +1,55 @@
-# Pixel Wall-E
-
-Un programa que permite **interpretar código** y **dibujar en un canvas** en un estilo pixel art. La interfaz está desarrollada con **Godot 4.4 Mono** y todos los scripts están escritos en **C#**.
-
+# Pixel Wall-E  
+A program that allows **interpreting code** and **drawing on a canvas** in a pixel art style. The interface is developed with **Godot 4.4 Mono**, and all scripts are written in **C#**.  
 ---
-
-## 🚀 Características
-
-- **Interpretación de código:** Permite ejecutar instrucciones para generar dibujos en pixel art.
-- **Canvas interactivo:** Dibuja en tiempo real sobre un canvas.
-- **Estilo pixel art:** Herramientas pensadas para crear arte a baja resolución.
-- **Interfaz intuitiva:** Basada en Godot 4.4 Mono con soporte completo para C#.
-- **Configuración personalizable:** Ajusta parámetros como el tamaño del brush, colores y tamaño del canvas.
-
+## 🚀 Features  
+- **Code interpretation:** Executes instructions to generate pixel art drawings  
+- **Interactive canvas:** Real-time drawing on a customizable canvas  
+- **Pixel art tools:** Designed for low-resolution art creation  
+- **Intuitive interface:** Godot-based with full C# support  
+- **Customizable settings:** Adjust brush size, colors, and canvas dimensions  
 ---
-
-## 🧰 Requisitos
-
-- [Godot 4.4 Mono](https://godotengine.org/download) (con soporte para C#)
-- [.NET SDK 9.0 o superior](https://dotnet.microsoft.com/en-us/download)
-- Sistema operativo compatible con Godot (Windows, macOS o Linux)
-- Editor de código (Visual Studio, Rider o Visual Studio Code recomendado)
-
+## 🧰 Requirements  
+- [Godot 4.4 Mono](https://godotengine.org/download) (with C# support)  
+- [.NET SDK 9.0+](https://dotnet.microsoft.com/en-us/download)  
+- Compatible OS: Windows, macOS, or Linux  
+- Recommended code editors:  
+  - Visual Studio  
+  - JetBrains Rider  
+  - Visual Studio Code  
 ---
-
-## 🛠️ Instalación
-
-1. **Clona el repositorio:**
-
-   ```bash
-   https://github.com/Abner-Abreu/Pixel-Wall-E.git
-2. **Abre el proyecto en Godot:**
-
-- Ejecuta Godot 4.4 Mono.
-
-- Selecciona la carpeta del proyecto (Pixel Wall-E).
-
-3. **Configura el entorno C#:**
-
-- Si es la primera vez que abres el proyecto, Godot compilará los scripts en C#. Espera a que finalice la compilación.
-
-- Asegúrate de tener el .NET SDK instalado.
-
+## 🛠️ Installation  
+1. **Clone the repository:**  
+   ```bash  
+   git clone https://github.com/Abner-Abreu/Pixel-Wall-E.git  
+   ```  
+2. **Open in Godot:**  
+   - Launch Godot 4.4 Mono  
+   - Import project → Select `Pixel Wall-E` folder  
+3. **Configure C# environment:**  
+   - Wait for initial script compilation  
+   - Verify .NET SDK installation  
 ---
-
-## ▶️ Ejecución
-
-**Desde el editor Godot:**
-
-- Selecciona la escena principal (MainWindow.tscn) y haz clic en el botón Play.
-
-**Desde la línea de comandos (opcional):**
-
-- Navega a la carpeta del proyecto y ejecuta el exportado (si ya has configurado una plantilla de exportación).
-
-- Alternativamente, puedes usar los scripts de compilación integrados en Godot para generar una versión ejecutable.
+## ▶️ Execution  
+### From Godot Editor  
+1. Open `MainWindow.tscn`  
+2. Click **Play** button ▶️  
+### Command Line (Optional)  
+# Navigate to project folder  
+```bash  
+cd path/to/Pixel-Wall-E
+```
+# Run via Godot executable (adjust path as needed)  
+```bash  
+godot4.4-mono --path ./  
+```  
+### Building Executables  
+1. Configure export templates in Godot  
+2. Use `Project → Export` to create platform-specific builds  
+---
+## 🎨 Workflow  
+1. Write drawing instructions in the code editor  
+2. Execute code to generate pixel art  
+3. Use interactive tools for manual editing  
+4. Adjust canvas/brush settings in real-time  
+5. Export creations as PNG images  
+> **Note**: First launch may take longer while Godot initializes the C# environment  
