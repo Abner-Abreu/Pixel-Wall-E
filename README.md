@@ -84,18 +84,14 @@ godot4.4-mono --path .
 
 1. **Write Code** - Use the built-in code editor to write drawing instructions
 2. **Execute** - Run the code to generate pixel art on the canvas
-3. **Edit Manually** - Use interactive tools to refine your creation
-4. **Adjust Settings** - Modify canvas size, brush settings, colors in real-time
-5. **Export** - Save your artwork as PNG images
+3. **Adjust Settings** - Modify canvas size, brush settings, colors in real-time
 
 ---
 
 ## 🎯 Use Cases
 
 - **Generative Art** - Create procedural pixel art through code
-- **Game Asset Creation** - Generate sprites and textures
 - **Learning Tool** - Teach programming concepts through visual feedback
-- **Prototyping** - Quickly mock up pixel art ideas
 - **Art Experimentation** - Combine code and manual drawing techniques
 
 ---
