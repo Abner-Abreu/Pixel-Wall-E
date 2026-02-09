@@ -1,55 +1,157 @@
-# Pixel Wall-E  
-A program that allows **interpreting code** and **drawing on a canvas** in a pixel art style. The interface is developed with **Godot 4.4 Mono**, and all scripts are written in **C#**.  
+# Pixel Wall-E
+
+![Godot](https://img.shields.io/badge/Godot-4.4_Mono-478cbf?logo=godot-engine)
+![.NET](https://img.shields.io/badge/.NET-9.0-512bd4?logo=.net)
+![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+A code-driven pixel art creation tool with an interactive canvas. Write code to generate pixel art or use the visual editor. Built with **Godot 4.4 Mono** and **C#**.
+
 ---
-## 🚀 Features  
-- **Code interpretation:** Executes instructions to generate pixel art drawings  
-- **Interactive canvas:** Real-time drawing on a customizable canvas  
-- **Pixel art tools:** Designed for low-resolution art creation  
-- **Intuitive interface:** Godot-based with full C# support  
-- **Customizable settings:** Adjust brush size, colors, and canvas dimensions  
+
+## 🚀 Features
+
+- **Code Interpreter** - Execute drawing instructions to create pixel art programmatically
+- **Interactive Canvas** - Real-time drawing with visual feedback
+- **Dual Creation Mode** - Code-based generation + manual editing
+- **Pixel Art Tools** - Optimized for low-resolution art creation
+- **Export System** - Save creations as PNG images
+- **Customizable Settings** - Adjust brush size, colors, and canvas dimensions
+- **Cross-Platform** - Works on Windows, macOS, and Linux
+
 ---
-## 🧰 Requirements  
-- [Godot 4.4 Mono](https://godotengine.org/download) (with C# support)  
-- [.NET SDK 9.0+](https://dotnet.microsoft.com/en-us/download)  
-- Compatible OS: Windows, macOS, or Linux  
-- Recommended code editors:  
-  - Visual Studio  
-  - JetBrains Rider  
-  - Visual Studio Code  
+
+## 🧰 Requirements
+
+- [Godot 4.4 Mono](https://godotengine.org/download) (with C# support)
+- [.NET SDK 9.0+](https://dotnet.microsoft.com/download)
+- Compatible OS: Windows, macOS, or Linux
+- Recommended IDEs:
+  - Visual Studio
+  - JetBrains Rider
+  - Visual Studio Code with C# extension
+
 ---
-## 🛠️ Installation  
-1. **Clone the repository:**  
-   ```bash  
-   git clone https://github.com/Abner-Abreu/Pixel-Wall-E.git  
-   ```  
-2. **Open in Godot:**  
-   - Launch Godot 4.4 Mono  
-   - Import project → Select `Pixel Wall-E` folder  
-3. **Configure C# environment:**  
-   - Wait for initial script compilation  
-   - Verify .NET SDK installation  
+
+## 🛠️ Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Abner-Abreu/Pixel-Wall-E.git
+   cd Pixel-Wall-E
+   ```
+
+2. **Open in Godot:**
+   - Launch Godot 4.4 Mono
+   - Click **Import**
+   - Select the `Pixel-Wall-E` folder
+   - Click **Import & Edit**
+
+3. **Build C# solution:**
+   - Wait for initial script compilation
+   - Godot will automatically generate `.csproj` files
+   - Verify .NET SDK is properly configured
+
+> [!NOTE]
+> First launch may take longer while Godot initializes the C# environment.
+
 ---
-## ▶️ Execution  
-### From Godot Editor  
-1. Open `MainWindow.tscn`  
-2. Click **Play** button ▶️  
-### Command Line (Optional)  
-# Navigate to project folder  
-```bash  
+
+## ▶️ Running the Project
+
+### From Godot Editor
+
+1. Open `MainWindow.tscn` (or main scene)
+2. Click the **Play** button ▶️ (or press `F5`)
+
+### From Command Line
+
+```bash
+# Navigate to project folder
 cd path/to/Pixel-Wall-E
+
+# Run via Godot executable (adjust path as needed)
+godot4.4-mono --path .
 ```
-# Run via Godot executable (adjust path as needed)  
-```bash  
-godot4.4-mono --path ./  
-```  
-### Building Executables  
-1. Configure export templates in Godot  
-2. Use `Project → Export` to create platform-specific builds  
+
+### Building Executables
+
+1. In Godot, go to **Project → Export**
+2. Configure export templates for your target platform(s)
+3. Click **Export Project** to create standalone builds
+
 ---
-## 🎨 Workflow  
-1. Write drawing instructions in the code editor  
-2. Execute code to generate pixel art  
-3. Use interactive tools for manual editing  
-4. Adjust canvas/brush settings in real-time  
-5. Export creations as PNG images  
-> **Note**: First launch may take longer while Godot initializes the C# environment  
+
+## 🎨 Workflow
+
+1. **Write Code** - Use the built-in code editor to write drawing instructions
+2. **Execute** - Run the code to generate pixel art on the canvas
+3. **Edit Manually** - Use interactive tools to refine your creation
+4. **Adjust Settings** - Modify canvas size, brush settings, colors in real-time
+5. **Export** - Save your artwork as PNG images
+
+---
+
+## 🎯 Use Cases
+
+- **Generative Art** - Create procedural pixel art through code
+- **Game Asset Creation** - Generate sprites and textures
+- **Learning Tool** - Teach programming concepts through visual feedback
+- **Prototyping** - Quickly mock up pixel art ideas
+- **Art Experimentation** - Combine code and manual drawing techniques
+
+---
+
+## 🗂️ Project Structure
+
+```
+Pixel-Wall-E/
+├── src/                    # C# scripts
+│   ├── Core/              # Core functionality
+│   ├── Drawing/           # Drawing system
+│   ├── Interpreter/       # Code interpreter
+│   └── UI/                # User interface
+├── scenes/                # Godot scenes
+├── assets/                # Images, fonts, etc.
+├── .gitignore
+├── .gitattributes
+├── project.godot          # Godot project file
+├── LICENSE
+└── README.md
+```
+
+---
+
+## 🛠️ Technical Details
+
+### Architecture
+
+- **Interpreter Engine** - Parses and executes drawing commands
+- **Canvas System** - Manages pixel buffer and rendering
+- **Command Pattern** - Implements drawing operations as reusable commands
+- **Event System** - Handles user input and tool interactions
+
+### Technologies
+
+- **Engine**: Godot 4.4 Mono
+- **Language**: C# 9.0
+- **Framework**: .NET 9.0
+- **Rendering**: Godot's 2D rendering pipeline
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🔗 Links
+
+- [Godot Engine](https://godotengine.org/)
+- [Godot C# Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/)
+- [.NET Documentation](https://docs.microsoft.com/dotnet/)
+
+---
+
+**Create pixel art through code!** 🎨✨
