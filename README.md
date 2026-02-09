@@ -13,9 +13,7 @@ A code-driven pixel art creation tool with an interactive canvas. Write code to 
 
 - **Code Interpreter** - Execute drawing instructions to create pixel art programmatically
 - **Interactive Canvas** - Real-time drawing with visual feedback
-- **Dual Creation Mode** - Code-based generation + manual editing
 - **Pixel Art Tools** - Optimized for low-resolution art creation
-- **Export System** - Save creations as PNG images
 - **Customizable Settings** - Adjust brush size, colors, and canvas dimensions
 - **Cross-Platform** - Works on Windows, macOS, and Linux
 
